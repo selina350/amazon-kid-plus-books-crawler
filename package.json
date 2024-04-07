@@ -1,0 +1,16 @@
+{
+  "name": "amazon-kid-plus-books-crawler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bookListCrawler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bookListCrawler.js --env-file .env"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
