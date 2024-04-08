@@ -3,17 +3,20 @@ const fs = require('node:fs')
 
 const result = {}
 
-
 const getPage = (pageToken = null, limit = 100) => {
   return axios.post(
     'https://parents.amazon.com/ajax/get-catalog-items?sif_profile=FTParentDashboard_SIF_NA',
     {
-      contentTypeFilterList: ['EBOOK'],
-      deviceFamilyFilterList: ['E_READER'],
-      childDirectedIdFilter: null,
-      subscriptionPresent: true,
-      searchQuery: null,
-      nextPageToken: pageToken,
+      'contentTypeFilterList': [
+        'EBOOK',
+      ],
+      'deviceFamilyFilterList': [
+        'E_READER',
+      ],
+      'childDirectedIdFilter': null,
+      'subscriptionPresent': true,
+      'searchQuery': null,
+      'nextPageToken': pageToken,
     }, {
       'headers': {
         'accept': 'application/json, text/plain, */*',
@@ -31,22 +34,22 @@ const getPage = (pageToken = null, limit = 100) => {
         'Referrer-Policy': 'strict-origin-when-cross-origin',
       },
     }).then(response => {
-    const { nextPageToken, itemList, lastPage, thumbnailUrl } = response.data
+    const { nextPageToken, itemList, lastPage} = response.data
     itemList.forEach(item => {
       const id = item.itemId.replace('//amazon-book/', '')
-      result[id] = { id, title: item.title, thumbnailUrl }
+      result[id] = { id, title: item.title, thumbnailUrl: item.thumbnailUrl }
     })
     console.log('num of books finished', Object.values(result).length)
     writeIntoFile(JSON.stringify(result))
     if (Number(nextPageToken) < limit && !lastPage) {
-      sleep(1000).then(() => {
+      sleep(3000).then(() => {
         return getPage(nextPageToken, limit)
       })
     }
   }).catch(error => {
     console.error('Error:', error)
     //retry
-    sleep(1000).then(() => {
+    sleep(10000).then(() => {
       return getPage(pageToken, limit)
     })
   })
@@ -68,4 +71,4 @@ const sleep = (ms) => {
   })
 }
 
-getPage('3000', 4000)
+getPage(null, 4000)
