@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import book_details from "../../../book_details.json";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -8,7 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,11 +29,27 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const rows = Object.values(book_details);
 
 const BookList = () => {
+  const booksArr = Object.values(book_details);
+
+  let filteredBooks = booksArr;
+
+  const [search, setSearch] = useState("");
+  filteredBooks = filteredBooks.filter((book) => book.title.toLowerCase().includes(search.toLowerCase()));
+
+
   return (
     <>
+      <div>
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        ></input>
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -48,17 +63,16 @@ const BookList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {filteredBooks.map((row) => (
               <StyledTableRow key={row.title}>
                 <StyledTableCell component="th" scope="row">
                   {row.title}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  <div >
-                    <img src={row.thumbnailUrl} width="100" height="auto"/>
+                  <div>
+                    <img src={row.thumbnailUrl} width="100" height="auto" />
                   </div>
-
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.rate}</StyledTableCell>
                 <StyledTableCell align="right">
